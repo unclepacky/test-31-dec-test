@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id       String     @id @default(uuid())
+  name     String     @unique // Full name of the customer.
+  contract Contract[]
+}
+
+// Model representing individual rental units or apartments.
+model Unit {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  dailyRate   Float      @default(0)
+  monthlyRate Float      @default(0)
+  status      UnitStatus @default(VACANT)
+
+  Contract Contract[]
+}
+
+model Contract {
+  id               String       @id @default(uuid())
+  type             ContractType @default(INACTIVE)
+  startDate        DateTime     @default(now())
+  endDate          DateTime     @default(now())
+  isDaily          Boolean      @default(false)
+  dailyAmount      Float        @default(0)
+  monthlyAmount    Float        @default(0)
+  newMonthlyAmount Float        @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  unitId String
+  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  Transaction       Transaction[]
+  ContractExtension ContractExtension[]
+}
+
+model ContractExtension {
+  id            String   @id @default(uuid())
+  startDate     DateTime
+  endDate       DateTime
+  isDaily       Boolean  @default(false)
+  dailyAmount   Float    @default(0)
+  monthlyAmount Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  contractId String
+  contract   Contract @relation(fields: [contractId], references: [id])
+}
+
+model Transaction {
+  id     String   @id @default(uuid())
+  date   DateTime @default(now()) // Date of the transaction.
+  amount Float // Amount of the transaction.
+
+  type TransactionType // Type of the transaction (rent, payment, etc.).
+
+  contractId String // ID of the associated contract.
+  contract   Contract @relation(fields: [contractId], references: [id]) // The associated contract.
+}
+
+// *******************************************************************************
+// ENUMS
+// *******************************************************************************
+
+enum ContractType {
+  INQUIRY
+  ACTIVE
+  INACTIVE
+  RELEASED
+  RESERVED
+}
+
+// Types of financial transactions associated with a contract.
+enum TransactionType {
+  RENT // Monthly rent charge.
+  CLEANING // Charges for cleaning services.
+  ELECTRICITY // Charges for electricity usage.
+  MAINTENANCE_FEE // Maintenance or repair charges.
+  PAYMENT // Payments made by the tenant.
+}
+
+enum UnitStatus {
+  VACANT
+  OCCUPIED
+  MAINTENANCE
+  RESERVED
+}
