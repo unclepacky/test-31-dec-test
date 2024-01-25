@@ -3,23 +3,26 @@ import prisma from "@/prisma/client";
 import { Contract } from "@prisma/client";
 import Link from "next/link";
 import React from "react";
+import BtnAutoExtend from "./BtnAutoExtend";
 
 export default async function ListContracts() {
   const contracts = await prisma.contract.findMany({
     include: {
-      unit: {
-        select: {
-          name: true,
+      unit: true,
+      ContractExtension: {
+        orderBy: {
+          startDate: "asc",
         },
       },
-      ContractExtension: true,
-      customer: {
-        select: {
-          name: true,
-        },
+      customer: true,
+    },
+    orderBy: {
+      unit: {
+        name: "asc",
       },
     },
   });
+
   return (
     <div>
       <table className="hidden max-w-full rounded-md text-gray-900 md:table">
@@ -52,6 +55,9 @@ export default async function ListContracts() {
                 <td className="whitespace-nowrap bg-white px-2 py-3 text-sm">
                   {contract.monthlyAmount}
                 </td>
+                <td className="whitespace-nowrap bg-white px-2 py-3 text-sm">
+                  {contract.newMonthlyAmount}
+                </td>
                 <td className="whitespace-nowrap bg-white px-2 py-3 text-xs">
                   {contract.type}
                 </td>
@@ -65,6 +71,9 @@ export default async function ListContracts() {
                   >
                     Ext
                   </Link>
+                </td>
+                <td>
+                  <BtnAutoExtend id={contract.id} />
                 </td>
               </tr>
               {contract.ContractExtension.map((ext) => (
@@ -80,6 +89,14 @@ export default async function ListContracts() {
                   </td>
                   <td className="whitespace-nowrap bg-white px-2 py-3 text-sm">
                     {ext.monthlyAmount}
+                  </td>
+                  <td className="whitespace-nowrap bg-white px-2 py-3 text-xs">
+                    <Link
+                      href={`/contract/extension/edit/${ext.id}`}
+                      className="border-2 rounded-full py-2 px-4"
+                    >
+                      edit
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -102,3 +119,17 @@ export default async function ListContracts() {
 //       },
 //     },
 //   });
+
+{
+  /* <div className="collapse bg-base-200">
+<input type="checkbox" />
+<div className="collapse-title text-xl font-medium">
+  Click me to show/hide content
+</div>
+<div className="collapse-content">
+  <p>hello</p>
+  <p>hello</p>
+  <p>hello</p>
+</div>
+</div> */
+}

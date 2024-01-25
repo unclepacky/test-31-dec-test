@@ -21,21 +21,6 @@ export default async function CreateContractPage() {
   return (
     <>
       <form action={addContract} className="w-1/2 border-2 ">
-        <select
-          required
-          name="contractType"
-          defaultValue=""
-          className="peer block rounded-md border border-gray-200 py-[9px] text-sm outline-2 placeholder:text-gray-500 md:w-1/2"
-        >
-          <option value="" disabled>
-            Select contract Type
-          </option>
-          {Object.values(ContractType).map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
         <div className="flex justify-between">
           <select
             required

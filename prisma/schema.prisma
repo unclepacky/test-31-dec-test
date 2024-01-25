@@ -61,17 +61,30 @@ model ContractExtension {
 
   contractId String
   contract   Contract @relation(fields: [contractId], references: [id])
+
+  Transaction Transaction[]
 }
 
 model Transaction {
-  id     String   @id @default(uuid())
-  date   DateTime @default(now()) // Date of the transaction.
-  amount Float // Amount of the transaction.
+  id     String          @id @default(uuid())
+  date   DateTime        @default(now()) // Date of the transaction.
+  type   TransactionType // Type of the transaction (rent, payment, etc.).
+  amount Float           @default(0) // Amount of the transaction.
 
-  type TransactionType // Type of the transaction (rent, payment, etc.).
+  fromDate DateTime?
+  toDate   DateTime?
+  fromTime DateTime?
+  tillTime DateTime?
+  // time     DateTime? @db.Time()
 
   contractId String // ID of the associated contract.
   contract   Contract @relation(fields: [contractId], references: [id]) // The associated contract.
+
+  extensionId String? // In case I want to link it to a certain extension / month
+  extension   ContractExtension? @relation(fields: [extensionId], references: [id]) // The associated extension.
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt()
 }
 
 // *******************************************************************************
@@ -88,11 +101,12 @@ enum ContractType {
 
 // Types of financial transactions associated with a contract.
 enum TransactionType {
-  RENT // Monthly rent charge.
   CLEANING // Charges for cleaning services.
   ELECTRICITY // Charges for electricity usage.
+  INTERNET
   MAINTENANCE_FEE // Maintenance or repair charges.
   PAYMENT // Payments made by the tenant.
+  RENT
 }
 
 enum UnitStatus {
@@ -101,3 +115,24 @@ enum UnitStatus {
   MAINTENANCE
   RESERVED
 }
+
+// model Unitsssss {
+//   id          String     @id @unique @default(uuid())
+//   name        String     @unique
+//   monthlyRate Float      @default(600) // Most recent default price in USD
+//   dailyRate   Float      @default(400) // Most recent default daily rate in USD
+//   type        UnitType   @default(STUDIO)
+//   status      UnitStatus @default(VACANT)
+//   block       Block      @default(A)
+
+//   rateHistory RateHistory[]
+
+//   // currencyId String   @default("e69607d7-71d6-429d-b15e-d220201e7a20")
+//   // currency   Currency @relation(fields: [currencyId], references: [id])
+//   currency CurrencyEnum @default(USD)
+
+//   // buildingId String   @default("77159616-0c50-4bd2-a708-2391b45debe5")
+//   // building   Building @relation(fields: [buildingId], references: [id])
+
+//   contract Contract[]
+// }

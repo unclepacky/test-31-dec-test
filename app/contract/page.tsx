@@ -36,6 +36,9 @@ export default async function ContractsPage() {
               <span className="border-x-2 py-2 px-4">
                 {contract.monthlyAmount}
               </span>
+              <span className="border-x-2 py-2 px-4">
+                {contract.newMonthlyAmount}
+              </span>
             </div>
           ))}
         </div>

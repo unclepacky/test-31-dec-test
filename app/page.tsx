@@ -15,6 +15,9 @@ export default function Home() {
           <Link href="\contract\create">
             <li>Create Contract</li>
           </Link>
+          <Link href="\transaction">
+            <li>Create Transaction</li>
+          </Link>
         </ul>
       </nav>
     </main>

@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",
+    "date-fns": "^3.0.6",
     "next": "14.0.4",
     "react": "^18",
+    "react-datepicker": "^4.25.0",
     "react-dom": "^18"
   },
   "devDependencies": {
@@ -19,6 +21,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "daisyui": "^4.4.24",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "postcss": "^8",
